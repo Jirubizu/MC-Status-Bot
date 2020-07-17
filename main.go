@@ -9,15 +9,24 @@ import (
 	"syscall"
 )
 
+type Bot struct {
+	config Config
+}
+
 func main() {
-	dg, err := discordgo.New("Bot " + "BOT-TOKEN")
+	var config Config
+	config.getConfig()
+	bot := Bot{
+		config: config,
+	}
+	dg, err := discordgo.New("Bot " + bot.config.Token)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
 
-	dg.AddHandler(messageCreate)
-	dg.AddHandler(botConnect)
+	dg.AddHandler(bot.messageCreate)
+	dg.AddHandler(bot.botConnect)
 
 	if err = dg.Open(); err != nil {
 		fmt.Println("error opening connection,", err)
